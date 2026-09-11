@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const notes = await getCollection("notes");
+
+const bySubject = new Map<string, { label: string; entries: typeof notes }>();
+for (const note of notes) {
+  const key = note.data.subject;
+  if (!bySubject.has(key)) {
+    bySubject.set(key, { label: note.data.subjectLabel, entries: [] });
+  }
+  bySubject.get(key)!.entries.push(note);
+}
+---
+
+<BaseLayout title="notes · Rakshit Ranka" description="Study notes, organized by subject.">
+  <h1 style="font-size:1.6rem;font-weight:500;margin:0 0 2rem;color:var(--pine);">notes</h1>
+  {bySubject.size === 0 && <p class="mono">No notes yet.</p>}
+  <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:1.5rem;">
+    {
+      Array.from(bySubject.entries()).map(([subject, { label, entries }]) => (
+        <div style="border:0.5px solid var(--rule);border-radius:6px;padding:1rem 1.2rem;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.6rem;">
+            <span class="mono" style="color:var(--pine);">{label}</span>
+            <span class="tag">{entries.length}</span>
+          </div>
+          <ul style="list-style:none;margin:0;padding:0;">
+            {entries.map((entry) => (
+              <li style="margin-bottom:0.4rem;font-size:0.92rem;">
+                <a href={`/notes/${subject}/${entry.id.split("/").pop()}`} style="color:var(--ink);">
+                  {entry.data.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</BaseLayout>

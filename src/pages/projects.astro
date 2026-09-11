@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const projects = (await getCollection("projects")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<BaseLayout title="projects · Rakshit Ranka" description="Things I've built.">
+  <h1 style="font-size:1.6rem;font-weight:500;margin:0 0 2rem;">projects</h1>
+  {projects.length === 0 && <p class="mono">Nothing listed yet.</p>}
+  <div>
+    {
+      projects.map((project) => (
+        <div style="padding:1.2rem 0;border-bottom:0.5px solid var(--rule);">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;">
+            <h2 style="font-size:1.1rem;font-weight:500;margin:0;">
+              {project.data.url ? (
+                <a href={project.data.url} style="color:var(--ink);">{project.data.title}</a>
+              ) : (
+                project.data.title
+              )}
+            </h2>
+            <span class="mono">{project.data.date.getFullYear()}</span>
+          </div>
+          <p style="margin:0.4rem 0;color:var(--ink-soft);">{project.data.description}</p>
+          <p class="tag" style="margin:0;">{project.data.stack.join(" · ")}</p>
+        </div>
+      ))
+    }
+  </div>
+</BaseLayout>

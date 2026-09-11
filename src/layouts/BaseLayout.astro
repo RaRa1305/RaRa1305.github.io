@@ -1,0 +1,70 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Personal site: projects, notes, and writing." } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" href="data:," />
+    <script is:inline>
+      const stored = localStorage.getItem("theme");
+      const theme = stored ?? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.dataset.theme = theme;
+    </script>
+  </head>
+  <body>
+    <header class="wrap" style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:0.5px solid var(--rule);padding:1.5rem 0;margin-bottom:2.5rem;">
+      <a href="/" class="mono" style="color:var(--ink);">Rakshit Ranka</a>
+      <nav style="display:flex;gap:1.1rem;align-items:baseline;">
+        <a class="mono" href="/notes" style="color:var(--pine);">notes</a>
+        <a class="mono" href="/blog" style="color:var(--rust);">blog</a>
+        <a class="mono" href="/projects" style="color:var(--ink-soft);">projects</a>
+        <button
+          id="theme-toggle"
+          aria-label="Toggle dark mode"
+          style="background:none;border:0.5px solid var(--rule);border-radius:4px;color:var(--ink-soft);cursor:pointer;padding:0.35rem;display:flex;align-items:center;justify-content:center;"
+        >
+          <span id="theme-icon"></span>
+        </button>
+      </nav>
+    </header>
+    <main class="wrap" style="padding-bottom:4rem;">
+      <slot />
+    </main>
+    <footer class="wrap mono" style="border-top:0.5px solid var(--rule);padding:1.5rem 0;color:var(--ink-soft);">
+      <span>&copy; {new Date().getFullYear()} Rakshit Ranka</span>
+    </footer>
+    <script is:inline>
+      const btn = document.getElementById("theme-toggle");
+      const icon = document.getElementById("theme-icon");
+
+      const sunSVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2.5M12 19v2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M2.5 12h2.5M19 12h2.5M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></svg>`;
+      const moonSVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.5a8.5 8.5 0 1 1-9-11 7 7 0 0 0 9 11z"/></svg>`;
+
+      function sync() {
+        const current = document.documentElement.dataset.theme ?? "light";
+        // Clicking should switch TO the other mode, so show the icon for the mode you'll land on
+        icon.innerHTML = current === "dark" ? sunSVG : moonSVG;
+      }
+      sync();
+
+      btn.addEventListener("click", () => {
+        const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+        document.documentElement.dataset.theme = next;
+        localStorage.setItem("theme", next);
+        sync();
+      });
+    </script>
+  </body>
+</html>

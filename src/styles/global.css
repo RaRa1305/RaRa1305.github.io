@@ -300,3 +300,31 @@ article img,
   color: var(--pine);
   border-color: var(--pine);
 }
+
+/* ---------- blog: tag filter bar ---------- */
+.tag-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.4rem 0 0.4rem;
+}
+.tag-filter-btn {
+  background: none;
+  border: 0.5px solid var(--rule);
+  color: var(--ink-soft);
+  border-radius: 999px;
+  padding: 0.28rem 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease, background 0.12s ease;
+}
+.tag-filter-btn:hover {
+  border-color: var(--rust);
+  color: var(--ink);
+}
+.tag-filter-btn.active {
+  background: var(--rust-soft);
+  border-color: var(--rust);
+  color: var(--rust);
+}

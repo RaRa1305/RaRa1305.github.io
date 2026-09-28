@@ -5,16 +5,33 @@ import { getCollection } from "astro:content";
 const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
+
+const tagCounts = new Map<string, number>();
+for (const post of posts) {
+  for (const t of post.data.tags) tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
+}
+const tags = [...tagCounts.keys()].sort((a, b) => tagCounts.get(b)! - tagCounts.get(a)! || a.localeCompare(b));
 ---
 
 <BaseLayout title="blog · Rakshit Ranka" description="Writing, thoughts, and random stuff.">
   <h1 style="font-size:1.6rem;font-weight:500;margin:0 0 0.5rem;color:var(--rust);">blog</h1>
   {posts.length === 0 && <p class="mono" style="margin-top:1.5rem;">No posts yet.</p>}
 
+  {
+    tags.length > 0 && (
+      <div class="tag-filter mono" role="group" aria-label="Filter posts by tag">
+        <button class="tag-filter-btn active" data-tag="all" type="button">all</button>
+        {tags.map((t) => (
+          <button class="tag-filter-btn" data-tag={t} type="button">{t}</button>
+        ))}
+      </div>
+    )
+  }
+
   <div class="blog-grid">
     {
       posts.map((post) => (
-        <a class="blog-card" href={`/blog/${post.id}`}>
+        <a class="blog-card" href={`/blog/${post.id}`} data-tags={post.data.tags.join(",")}>
           <p class="mono bc-meta">
             {post.data.date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
             {post.data.tags.length > 0 && (
@@ -30,4 +47,41 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
       ))
     }
   </div>
+
+  <p class="mono" id="no-match" style="display:none;margin-top:1.5rem;color:var(--ink-soft);">
+    No posts tagged with that.
+  </p>
+
+  <script is:inline>
+    const btns = document.querySelectorAll(".tag-filter-btn");
+    const cards = document.querySelectorAll(".blog-card");
+    const noMatch = document.getElementById("no-match");
+
+    function apply(tag) {
+      let visible = 0;
+      cards.forEach((card) => {
+        const tags = (card.dataset.tags || "").split(",");
+        const show = tag === "all" || tags.includes(tag);
+        card.style.display = show ? "" : "none";
+        if (show) visible++;
+      });
+      if (noMatch) noMatch.style.display = visible === 0 ? "" : "none";
+      btns.forEach((b) => b.classList.toggle("active", b.dataset.tag === tag));
+    }
+
+    btns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const tag = btn.dataset.tag;
+        const url = new URL(location.href);
+        if (tag === "all") url.searchParams.delete("tag");
+        else url.searchParams.set("tag", tag);
+        history.replaceState(null, "", url);
+        apply(tag);
+      });
+    });
+
+    const initial = new URL(location.href).searchParams.get("tag");
+    const validTags = [...btns].map((b) => b.dataset.tag);
+    apply(initial && validTags.includes(initial) ? initial : "all");
+  </script>
 </BaseLayout>

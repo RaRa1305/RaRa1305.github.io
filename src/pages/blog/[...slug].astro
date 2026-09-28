@@ -16,17 +16,55 @@ interface Props {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+
+// Reading time: strip code fences/inline code/markdown syntax, then count words at ~200wpm.
+const plain = (post.body ?? "")
+  .replace(/```[\s\S]*?```/g, "")
+  .replace(/`[^`]*`/g, "")
+  .replace(/[#>*_\[\]()!-]/g, " ");
+const wordCount = plain.split(/\s+/).filter(Boolean).length;
+const readMins = Math.max(1, Math.round(wordCount / 200));
 ---
 
 <BaseLayout title={`${post.data.title} · Rakshit Ranka`} description={post.data.description}>
   <article class="post">
     <p class="mono" style="margin:0 0 0.3rem;color:var(--rust);">
       {post.data.date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+      <span> &middot; {readMins} min read</span>
       {post.data.tags.length > 0 && <span> &middot; {post.data.tags.join(", ")}</span>}
     </p>
     <h1 style="font-size:1.8rem;font-weight:500;margin:0 0 1.5rem;">{post.data.title}</h1>
-    <div style="line-height:1.75;">
+    <div class="post-body" style="line-height:1.75;">
       <Content />
     </div>
   </article>
+
+  <script is:inline>
+    document.querySelectorAll(".post-body pre").forEach((pre) => {
+      const wrap = document.createElement("div");
+      wrap.className = "code-wrap";
+      pre.replaceWith(wrap);
+      wrap.appendChild(pre);
+
+      const btn = document.createElement("button");
+      btn.className = "code-copy";
+      btn.type = "button";
+      btn.textContent = "copy";
+      btn.addEventListener("click", async () => {
+        const code = pre.querySelector("code")?.innerText ?? pre.innerText;
+        try {
+          await navigator.clipboard.writeText(code);
+          btn.textContent = "copied";
+          btn.classList.add("copied");
+        } catch {
+          btn.textContent = "failed";
+        }
+        setTimeout(() => {
+          btn.textContent = "copy";
+          btn.classList.remove("copied");
+        }, 1500);
+      });
+      wrap.appendChild(btn);
+    });
+  </script>
 </BaseLayout>

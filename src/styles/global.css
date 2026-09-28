@@ -201,3 +201,102 @@ article img,
   max-width: min(100%, 680px);
   margin: 1.6rem auto;
 }
+
+/* ---------- blog: two-column card grid ---------- */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 1.4rem;
+  margin-top: 2rem;
+}
+@media (max-width: 900px) {
+  .blog-grid { grid-template-columns: 1fr; }
+}
+
+.blog-card {
+  display: flex;
+  flex-direction: column;
+  border: 0.5px solid var(--rule);
+  border-radius: 10px;
+  padding: 1.4rem 1.5rem;
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.blog-card:hover {
+  border-color: var(--rust);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+.bc-meta {
+  margin: 0 0 0.6rem;
+  color: var(--rust);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.bc-tags { display: inline-flex; flex-wrap: wrap; gap: 0.35rem; }
+.bc-tag {
+  background: var(--rust-soft);
+  color: var(--rust);
+  border-radius: 4px;
+  padding: 0.08rem 0.5rem;
+  font-size: 0.72rem;
+}
+.bc-title {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem;
+  color: var(--ink);
+}
+.bc-desc {
+  margin: 0 0 1rem;
+  color: var(--ink-soft);
+  flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.bc-more {
+  color: var(--pine);
+  font-size: 0.78rem;
+}
+
+/* ---------- blog post: code blocks + copy button ---------- */
+.post-body pre {
+  padding: 1rem 1.1rem;
+  border-radius: 8px;
+  border: 0.5px solid var(--rule);
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.code-wrap {
+  position: relative;
+  margin: 1.4rem 0;
+}
+.code-copy {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-soft);
+  background: var(--rust-soft);
+  border: 0.5px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.2rem 0.55rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.code-wrap:hover .code-copy,
+.code-copy:focus-visible {
+  opacity: 1;
+}
+.code-copy.copied {
+  color: var(--pine);
+  border-color: var(--pine);
+}

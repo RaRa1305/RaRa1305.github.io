@@ -1,0 +1,213 @@
+---
+// Hardcoded location. Keep coordinates coarse (campus/city level) since the site is public.
+const location = "IIT Kharagpur, WB";
+const lat = 22.31;
+const lon = 87.31;
+
+const coords = `${lat.toFixed(2)}N ${lon.toFixed(2)}E`;
+const hex = "0x" + [lat, lon].map((n) => Math.round(n * 100).toString(16).toUpperCase().padStart(4, "0")).join("");
+const place = location.split(",")[0].toUpperCase();
+
+const R = "#ff6a55", G = "#45c46a", W = "#c8d0dc";
+const spiders = [
+  { x: 140, y: 120, c: R }, { x: 162, y: 110, c: R }, { x: 184, y: 120, c: R },
+  { x: 202, y: 138, c: R }, { x: 126, y: 142, c: R }, { x: 150, y: 168, c: R }, { x: 190, y: 166, c: R },
+  { x: 100, y: 164, c: G }, { x: 128, y: 194, c: G }, { x: 172, y: 198, c: G }, { x: 214, y: 186, c: G },
+  { x: 60, y: 140, c: W }, { x: 250, y: 118, c: W }, { x: 292, y: 140, c: W },
+];
+const sightings = spiders.filter((s) => s.c === R).length;
+
+// Pixel-art Spidey face (15x15). K outline, R red, W eye.
+const face = [
+  ".....KKKKK.....",
+  "...KKRRRRRKK...",
+  "..KRRRRRRRRRK..",
+  ".KRRRRRRRRRRRK.",
+  "KRKKKRRRRRKKKRK",
+  "KWWWWKRRRKWWWWK",
+  "KWWWWWKRKWWWWWK",
+  "KWWWWWWKWWWWWWK",
+  "KWWWWWKRKWWWWWK",
+  "KWWWWKRRRKWWWWK",
+  "KRKKKRRRRRKKKRK",
+  ".KRRRRRRRRRRRK.",
+  "..KRRRRRRRRRK..",
+  "...KKRRRRRKK...",
+  ".....KKKKK.....",
+];
+const pal: Record<string, string> = { K: "#1c1a14", R: "#ee5546", W: "#f1f0e4" };
+const facePixels = face.flatMap((row, y) => [...row].map((ch, x) => ({ x, y, ch }))).filter((p) => p.ch !== ".");
+
+// <SpideyTracker compact /> hides the button row for tight spaces like the hero.
+const { compact = false } = Astro.props;
+---
+
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet" />
+
+<div class="st">
+  <div class="st-top">
+    <span>SPIDEY TRACKER</span>
+    <span>{coords}</span>
+  </div>
+
+  <div class="st-screen">
+    <svg viewBox="0 0 320 260" shape-rendering="crispEdges" role="img" aria-label={`Spidey tracker map. Sighting in your direct vicinity: ${location}`}>
+      <defs>
+        <pattern id="st-blocks" width="14" height="14" patternUnits="userSpaceOnUse">
+          <rect x="1.5" y="1.5" width="11" height="11" fill="#173b86" />
+        </pattern>
+        <symbol id="st-spider" viewBox="-10 -10 20 20" overflow="visible">
+          <rect x="-9" y="-9" width="18" height="18" rx="5" fill="var(--tok)" stroke="#14213d" stroke-width="2" />
+          <path d="M-6-4L-2-1M-7 0L-2 0M-6 4L-2 1M6-4L2-1M7 0L2 0M6 4L2 1" stroke="#14213d" stroke-width="1.2" fill="none" />
+          <ellipse rx="2.6" ry="3.2" fill="#14213d" />
+        </symbol>
+        <symbol id="st-mask" viewBox="0 0 15 15">
+          {facePixels.map((p) => <rect x={p.x} y={p.y} width="1" height="1" fill={pal[p.ch]} />)}
+        </symbol>
+      </defs>
+
+      <rect width="320" height="260" fill="#0c1f4d" />
+      <rect width="320" height="260" fill="url(#st-blocks)" />
+      <path d="M110 0H160C150 60 110 110 95 170C85 205 70 235 55 260H0V230C30 190 50 150 70 110C85 80 100 40 110 0Z" fill="#1d4f9c" opacity="0.85" />
+      <g stroke="#2d63c4" stroke-width="4" fill="none">
+        <path d="M0 210L320 90" /><path d="M120 260L320 150" />
+      </g>
+
+      {spiders.map((s) => <use href="#st-spider" x={s.x - 10} y={s.y - 10} width="20" height="20" style={`--tok:${s.c}`} />)}
+
+      <circle class="st-ring" cx="160" cy="146" r="10" />
+      <circle class="st-ring st-ring-2" cx="160" cy="146" r="10" />
+      <circle cx="160" cy="146" r="11" fill="#ffb45c" stroke="#14213d" stroke-width="3" />
+      <circle cx="160" cy="146" r="4" fill="#0c1f4d" />
+
+      <rect x="8" y="8" width="118" height="16" fill="#0a1a45" stroke="#14213d" stroke-width="2" />
+      <polygon points="18,10 24,13 24,19 18,22 12,19 12,13" fill="none" stroke="#5f8ff0" stroke-width="1.5" />
+      <text x="30" y="19" class="st-t" style="font-size:8px" fill="#8fb4ff">{place}</text>
+
+      <rect x="17" y="55" width="150" height="38" fill="#14213d" />
+      <rect x="14" y="52" width="150" height="38" fill="#ff8a75" stroke="#14213d" stroke-width="3" />
+      <g fill="#fff" stroke="#14213d" stroke-width="1.5">
+        <rect x="52" y="45" width="5" height="10" rx="2" /><rect x="59" y="45" width="5" height="10" rx="2" /><rect x="66" y="45" width="5" height="10" rx="2" />
+        <rect x="109" y="45" width="5" height="10" rx="2" /><rect x="116" y="45" width="5" height="10" rx="2" /><rect x="123" y="45" width="5" height="10" rx="2" />
+      </g>
+      <use href="#st-mask" x="74" y="24" width="30" height="30" />
+      <text x="89" y="69" text-anchor="middle" class="st-t" fill="#14213d">SIGHTING IN YOUR</text>
+      <text x="89" y="82" text-anchor="middle" class="st-t" fill="#14213d">DIRECT VICINITY</text>
+
+      <rect x="198" y="8" width="112" height="56" fill="#5b7396" stroke="#14213d" stroke-width="3" />
+      <rect x="204" y="14" width="100" height="19" fill="#8fe3a0" stroke="#14213d" stroke-width="2" />
+      <text x="254" y="28" text-anchor="middle" class="st-t" style="font-size:9px" fill="#14351f">{hex}</text>
+      <rect x="204" y="38" width="100" height="20" fill="#3b4f70" stroke="#14213d" stroke-width="2" />
+      <path transform="translate(222 48)" d="M0-3C-3-7-9-3-5 2L0 7L5 2C9-3 3-7 0-3Z" fill="#ff6a55" stroke="#14213d" stroke-width="1.5" />
+      <text x="240" y="53" class="st-t" style="font-size:11px" fill="#ffb45c">X{sightings}</text>
+
+      <g transform="translate(272 214)">
+        <circle r="33" fill="#0a1a45" stroke="#14213d" stroke-width="3" />
+        <g stroke="#3a68c8" stroke-width="1" fill="none">
+          <path d="M-30 0H30M0-30V30M-21-21L21 21M21-21L-21 21" />
+          <polygon points="10,0 7.1,7.1 0,10 -7.1,7.1 -10,0 -7.1,-7.1 0,-10 7.1,-7.1" />
+          <polygon points="20,0 14.1,14.1 0,20 -14.1,14.1 -20,0 -14.1,-14.1 0,-20 14.1,-14.1" />
+          <polygon points="30,0 21.2,21.2 0,30 -21.2,21.2 -30,0 -21.2,-21.2 0,-30 21.2,-21.2" />
+        </g>
+        <circle cx="9" cy="-8" r="2.5" fill="#ffb45c" />
+      </g>
+
+      <circle cx="32" cy="226" r="24" fill="#9cc4f5" stroke="#14213d" stroke-width="3" />
+      <use href="#st-mask" x="17" y="211" width="30" height="30" />
+
+      {["0", "S", "T"].map((ch, i) => (
+        <g transform={`translate(2 ${104 + i * 24})`}>
+          <polygon points="4,0 22,0 28,10 22,20 4,20 0,10" fill="#ff8a75" stroke="#14213d" stroke-width="2" />
+          <text x="14" y="15" text-anchor="middle" class="st-t" style="font-size:11px" fill="#14213d">{ch}</text>
+        </g>
+      ))}
+
+      <rect x="136" y="8" width="36" height="36" fill="#ffb45c" stroke="#14213d" stroke-width="3" />
+      <path transform="translate(154 27)" d="M-4-2L-12-8M-5 0L-14 0M-4 3L-12 9M4-2L12-8M5 0L14 0M4 3L12 9" stroke="#14213d" stroke-width="2" fill="none" />
+      <ellipse cx="154" cy="28" rx="5" ry="6" fill="#14213d" />
+      <circle cx="154" cy="20" r="3" fill="#14213d" />
+    </svg>
+  </div>
+
+  {!compact && (
+    <div class="st-btns">
+      <a class="g" href="/blog">BLOG</a>
+      <a class="g" href="/notes">NOTES</a>
+      <a class="g" href="/resume.pdf">RESUME</a>
+      <a class="o" href="https://github.com/RaRa1305" target="_blank">GITHUB</a>
+      <a class="o" href="https://www.linkedin.com/in/rakshit-ranka-5992052b9/" target="_blank">LINKEDIN</a>
+      <a class="o" href="mailto:rakshitcosmo13@gmail.com">EMAIL</a>
+    </div>
+  )}
+</div>
+
+<style>
+  .st {
+    max-width: 520px;
+    padding: 10px;
+    background: #3b82f6;
+    border: 3px solid #14213d;
+    border-radius: 14px;
+    box-shadow: 4px 4px 0 #14213d;
+    font-family: "Silkscreen", ui-monospace, monospace;
+  }
+  .st-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding: 4px 8px;
+    background: #14213d;
+    color: #a7c4ff;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+  .st-screen {
+    border: 3px solid #14213d;
+    background: #0c1f4d;
+    overflow: hidden;
+  }
+  .st-screen svg { display: block; width: 100%; height: auto; }
+  .st-t {
+    font-family: "Silkscreen", ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .st-ring {
+    fill: none;
+    stroke: #ffb45c;
+    stroke-width: 2;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: st-pulse 2.4s ease-out infinite;
+  }
+  .st-ring-2 { animation-delay: 1.2s; }
+  @keyframes st-pulse {
+    from { transform: scale(1); opacity: 0.9; }
+    to { transform: scale(4.5); opacity: 0; }
+  }
+  .st-btns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .st-btns a {
+    padding: 8px 4px;
+    border: 3px solid #14213d;
+    box-shadow: 0 3px 0 #14213d;
+    color: #14213d;
+    font-size: 11px;
+    text-align: center;
+    text-decoration: none;
+  }
+  .st-btns a:hover {
+    text-decoration: none;
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #14213d;
+  }
+  .g { background: #7ee787; }
+  .o { background: #ffb45c; }
+  @media (prefers-reduced-motion: reduce) {
+    .st-ring { animation: none; opacity: 0; }
+  }
+</style>

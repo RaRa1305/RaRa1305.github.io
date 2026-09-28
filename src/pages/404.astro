@@ -1,0 +1,210 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+// Same pixel face as the tracker (15x15). K outline, R red, W eye.
+const face = [
+  ".....KKKKK.....",
+  "...KKRRRRRKK...",
+  "..KRRRRRRRRRK..",
+  ".KRRRRRRRRRRRK.",
+  "KRKKKRRRRRKKKRK",
+  "KWWWWKRRRKWWWWK",
+  "KWWWWWKRKWWWWWK",
+  "KWWWWWWKWWWWWWK",
+  "KWWWWWKRKWWWWWK",
+  "KWWWWKRRRKWWWWK",
+  "KRKKKRRRRRKKKRK",
+  ".KRRRRRRRRRRRK.",
+  "..KRRRRRRRRRK..",
+  "...KKRRRRRKK...",
+  ".....KKKKK.....",
+];
+const pal: Record<string, string> = { K: "#1c1a14", R: "#ee5546", W: "#f1f0e4" };
+const facePixels = face.flatMap((row, y) => [...row].map((ch, x) => ({ x, y, ch }))).filter((p) => p.ch !== ".");
+---
+
+<BaseLayout title="404 · Rakshit Ranka" description="Page not found.">
+  <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet" />
+
+  <div class="nf-wrap">
+    <p class="mono" style="margin:0 0 1.2rem;text-align:center;">404 &middot; page not found</p>
+
+    <div class="nf">
+      <div class="nf-top">
+        <span>SPIDEY TRACKER</span>
+        <span>00.00N 00.00E</span>
+      </div>
+
+      <div class="nf-screen">
+        <svg viewBox="0 0 320 260" shape-rendering="crispEdges" role="img" aria-label="Spidey tracker map showing no sightings at this location">
+          <defs>
+            <pattern id="nf-blocks" width="14" height="14" patternUnits="userSpaceOnUse">
+              <rect x="1.5" y="1.5" width="11" height="11" fill="#173b86" />
+            </pattern>
+            <symbol id="nf-face" viewBox="0 0 15 15">
+              {facePixels.map((p) => <rect x={p.x} y={p.y} width="1" height="1" fill={pal[p.ch]} />)}
+            </symbol>
+          </defs>
+
+          <rect width="320" height="260" fill="#0c1f4d" />
+          <rect width="320" height="260" fill="url(#nf-blocks)" />
+          <g stroke="#2d63c4" stroke-width="4" fill="none">
+            <path d="M0 210L320 90" /><path d="M120 260L320 150" />
+          </g>
+
+          <!-- empty target: nothing here -->
+          <circle class="nf-ring" cx="160" cy="176" r="10" />
+          <circle class="nf-ring nf-ring-2" cx="160" cy="176" r="10" />
+          <circle cx="160" cy="176" r="14" fill="none" stroke="#ffb45c" stroke-width="3" stroke-dasharray="5 5" />
+          <circle cx="160" cy="176" r="3" fill="#5f8ff0" />
+
+          <!-- status badge -->
+          <rect x="8" y="8" width="118" height="16" fill="#0a1a45" stroke="#14213d" stroke-width="2" />
+          <polygon points="18,10 24,13 24,19 18,22 12,19 12,13" fill="none" stroke="#ff8a75" stroke-width="1.5" />
+          <text x="30" y="19" class="nf-t" style="font-size:8px" fill="#ff8a75">NO SIGNAL</text>
+
+          <!-- counter box -->
+          <rect x="198" y="8" width="112" height="56" fill="#5b7396" stroke="#14213d" stroke-width="3" />
+          <rect x="204" y="14" width="100" height="19" fill="#8fe3a0" stroke="#14213d" stroke-width="2" />
+          <text x="254" y="28" text-anchor="middle" class="nf-t" style="font-size:9px" fill="#14351f">0x0000</text>
+          <rect x="204" y="38" width="100" height="20" fill="#3b4f70" stroke="#14213d" stroke-width="2" />
+          <path transform="translate(222 48)" d="M0-3C-3-7-9-3-5 2L0 7L5 2C9-3 3-7 0-3Z" fill="#ff6a55" stroke="#14213d" stroke-width="1.5" />
+          <text x="240" y="53" class="nf-t" style="font-size:11px" fill="#ffb45c">X0</text>
+
+          <!-- banner + confused face -->
+          <rect x="48" y="83" width="224" height="44" fill="#14213d" />
+          <rect x="45" y="80" width="224" height="44" fill="#ff8a75" stroke="#14213d" stroke-width="3" />
+          <g fill="#fff" stroke="#14213d" stroke-width="1.5">
+            <rect x="103" y="73" width="5" height="10" rx="2" /><rect x="110" y="73" width="5" height="10" rx="2" /><rect x="117" y="73" width="5" height="10" rx="2" />
+            <rect x="192" y="73" width="5" height="10" rx="2" /><rect x="199" y="73" width="5" height="10" rx="2" /><rect x="206" y="73" width="5" height="10" rx="2" />
+          </g>
+          <use href="#nf-face" x="142" y="48" width="30" height="30" />
+          <text x="187" y="60" class="nf-t" style="font-size:16px" fill="#ffb45c">?</text>
+          <text x="126" y="66" class="nf-t" style="font-size:11px" fill="#ffb45c">?</text>
+          <text x="157" y="98" text-anchor="middle" class="nf-t" fill="#14213d">NO SIGHTINGS AT</text>
+          <text x="157" y="112" text-anchor="middle" class="nf-t" fill="#14213d">THIS LOCATION</text>
+
+          <!-- empty radar -->
+          <g transform="translate(272 214)">
+            <circle r="33" fill="#0a1a45" stroke="#14213d" stroke-width="3" />
+            <g stroke="#3a68c8" stroke-width="1" fill="none">
+              <path d="M-30 0H30M0-30V30M-21-21L21 21M21-21L-21 21" />
+              <polygon points="10,0 7.1,7.1 0,10 -7.1,7.1 -10,0 -7.1,-7.1 0,-10 7.1,-7.1" />
+              <polygon points="20,0 14.1,14.1 0,20 -14.1,14.1 -20,0 -14.1,-14.1 0,-20 14.1,-14.1" />
+              <polygon points="30,0 21.2,21.2 0,30 -21.2,21.2 -30,0 -21.2,-21.2 0,-30 21.2,-21.2" />
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div class="nf-path"><span>LOCATION:</span> <span id="nf-path">/unknown</span></div>
+      <a class="nf-btn" href="/">RETURN TO BASE</a>
+    </div>
+
+  </div>
+
+  <script is:inline>
+    const el = document.getElementById("nf-path");
+    if (el) {
+      try {
+        const p = decodeURIComponent(location.pathname);
+        el.textContent = p.length > 28 ? p.slice(0, 27) + "…" : p;
+      } catch {
+        el.textContent = location.pathname;
+      }
+    }
+  </script>
+</BaseLayout>
+
+<style>
+  /* 404 page has no navbar (this stylesheet only loads on this page) */
+  :global(header) { display: none !important; }
+
+  .nf-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 0 2rem;
+  }
+  .nf {
+    width: 100%;
+    max-width: 440px;
+    padding: 10px;
+    background: #3b82f6;
+    border: 3px solid #14213d;
+    border-radius: 14px;
+    box-shadow: 4px 4px 0 #14213d;
+    font-family: "Silkscreen", ui-monospace, monospace;
+  }
+  .nf-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding: 4px 8px;
+    background: #14213d;
+    color: #a7c4ff;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+  .nf-screen {
+    border: 3px solid #14213d;
+    background: #0c1f4d;
+    overflow: hidden;
+  }
+  .nf-screen svg { display: block; width: 100%; height: auto; }
+  .nf-t {
+    font-family: "Silkscreen", ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .nf-ring {
+    fill: none;
+    stroke: #ffb45c;
+    stroke-width: 2;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: nf-pulse 2.4s ease-out infinite;
+  }
+  .nf-ring-2 { animation-delay: 1.2s; }
+  @keyframes nf-pulse {
+    from { transform: scale(1); opacity: 0.9; }
+    to { transform: scale(4.5); opacity: 0; }
+  }
+  .nf-path {
+    display: flex;
+    gap: 0.5em;
+    margin-top: 8px;
+    padding: 6px 8px;
+    background: #14213d;
+    color: #a7c4ff;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+  .nf-path span:last-child {
+    color: #ffb45c;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .nf-btn {
+    display: block;
+    margin-top: 10px;
+    padding: 9px 4px;
+    background: #7ee787;
+    border: 3px solid #14213d;
+    box-shadow: 0 3px 0 #14213d;
+    color: #14213d;
+    font-size: 12px;
+    text-align: center;
+    text-decoration: none;
+  }
+  .nf-btn:hover {
+    text-decoration: none;
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #14213d;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nf-ring { animation: none; opacity: 0; }
+  }
+</style>

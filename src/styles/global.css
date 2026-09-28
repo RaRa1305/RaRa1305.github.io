@@ -231,3 +231,15 @@ main {
 .home-top + div {
   margin-top: 2rem !important;
 }
+
+/* keep page content in the same place whether or not the page has a scrollbar */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* current page marker in the nav */
+header a[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 8px;
+}

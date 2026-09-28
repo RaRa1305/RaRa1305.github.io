@@ -7,6 +7,11 @@ interface Props {
 }
 
 const { title, description = "Personal site: projects, notes, and writing." } = Astro.props;
+
+const path = Astro.url.pathname;
+const isHome = path === "/";
+const isNotes = path.startsWith("/notes");
+const isBlog = path.startsWith("/blog");
 ---
 
 <!doctype html>
@@ -25,10 +30,10 @@ const { title, description = "Personal site: projects, notes, and writing." } = 
   </head>
   <body>
     <header class="wrap" style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:0.5px solid var(--rule);padding:1.5rem 0;margin-bottom:2.5rem;">
-      <a href="/" class="mono" style="color:var(--ink);">home</a>
+      <a href="/" class="mono" style="color:var(--ink);" aria-current={isHome ? "page" : undefined}>home</a>
       <nav style="display:flex;gap:1.1rem;align-items:baseline;">
-        <a class="mono" href="/notes" style="color:var(--pine);">notes</a>
-        <a class="mono" href="/blog" style="color:var(--rust);">blog</a>
+        <a class="mono" href="/notes" style="color:var(--pine);" aria-current={isNotes ? "page" : undefined}>notes</a>
+        <a class="mono" href="/blog" style="color:var(--rust);" aria-current={isBlog ? "page" : undefined}>blog</a>
         <button
           id="theme-toggle"
           aria-label="Toggle dark mode"

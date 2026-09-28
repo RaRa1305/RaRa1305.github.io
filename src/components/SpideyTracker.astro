@@ -66,12 +66,7 @@ const { compact = false } = Astro.props;
         </symbol>
       </defs>
 
-      <rect width="320" height="260" fill="#0c1f4d" />
-      <rect width="320" height="260" fill="url(#st-blocks)" />
-      <path d="M110 0H160C150 60 110 110 95 170C85 205 70 235 55 260H0V230C30 190 50 150 70 110C85 80 100 40 110 0Z" fill="#1d4f9c" opacity="0.85" />
-      <g stroke="#2d63c4" stroke-width="4" fill="none">
-        <path d="M0 210L320 90" /><path d="M120 260L320 150" />
-      </g>
+      <image href="/spidey-map.png" x="0" y="0" width="320" height="260" preserveAspectRatio="none" style="image-rendering:pixelated" />
 
       {spiders.map((s) => <use href="#st-spider" x={s.x - 10} y={s.y - 10} width="20" height="20" style={`--tok:${s.c}`} />)}
 

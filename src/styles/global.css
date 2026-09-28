@@ -1,4 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap");
+
+/* ---------- tokens ---------- */
 
 :root {
   --paper: #f5f3ee;
@@ -25,26 +28,25 @@
   --rust-soft: #2c211c;
 }
 
-body {
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
+/* ---------- base ---------- */
 
 * {
   box-sizing: border-box;
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
+html {
+  scrollbar-gutter: stable;
 }
 
 body {
+  margin: 0;
+  padding: 0 1.5rem;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-serif);
   font-size: 17px;
   line-height: 1.65;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 a {
@@ -56,26 +58,22 @@ a:hover {
   text-decoration: underline;
 }
 
-.mono {
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  color: var(--ink-soft);
-}
+/* ---------- layout utilities ---------- */
 
 .wrap {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0;
 }
 
 .narrow {
   max-width: 62ch;
 }
 
-hr,
-.rule {
-  border: none;
-  border-top: 0.5px solid var(--rule);
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
 }
 
 .tag {
@@ -84,56 +82,101 @@ hr,
   color: var(--ink-soft);
 }
 
+hr,
+.rule {
+  border: none;
+  border-top: 0.5px solid var(--rule);
+}
+
+/* ---------- header ---------- */
+
+header .mono {
+  font-size: 0.95rem;
+}
+
+header a[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 8px;
+}
+
+/* ---------- home hero ---------- */
+
 .hero-section {
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 16rem;
   margin-bottom: 3rem;
 }
 
 .hero-photo {
-  width: 170px;
-  height: 170px;
-  border-radius: 8px; 
+  border-radius: 8px;
   object-fit: cover;
   flex-shrink: 0;
-  margin-top: -0.8rem;
 }
 
-@media (max-width: 600px) {
+.hero-tracker {
+  flex-shrink: 0;
+}
+
+.home-top > div:last-child {
+  margin-bottom: 2.5rem;
+}
+
+/* below 1000px: stacked column (text, Luffy, tracker) */
+@media (max-width: 999px) {
   .hero-section {
-    flex-direction: column-reverse;
+    flex-direction: column;
     align-items: flex-start;
+    gap: 1.5rem;
+  }
+  .hero-section > .narrow { order: 1; }
+  .hero-section > .hero-photo {
+    order: 2;
+    width: 130px;
+    height: 130px;
+  }
+  .hero-section > .hero-tracker {
+    order: 3;
+    width: 100%;
+    max-width: 380px;
   }
 }
-article img,
-.narrow img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 1.2rem auto;
-  border-radius: 6px;
-  border: 0.5px solid var(--rule);
+
+/* 1000px+: hero becomes a grid so Luffy/tracker sit beside the text and Recent */
+@media (min-width: 1000px) {
+  .home-top {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) 420px;
+    grid-template-areas:
+      "text luffy . tracker"
+      "recent recent recent tracker";
+    align-items: start;
+  }
+  .hero-section {
+    display: contents;
+  }
+  .hero-section > .narrow { grid-area: text; }
+  .hero-section > .hero-photo {
+    grid-area: luffy;
+    width: 192px;
+    height: 192px;
+    margin-top: -14px;
+    margin-left: calc(2.5rem + clamp(0.5rem, 5vw - 2rem, 3rem));
+  }
+  .hero-section > .hero-tracker {
+    grid-area: tracker;
+    width: 380px;
+    justify-self: end;
+  }
+  .home-top > div:last-child {
+    grid-area: recent;
+    margin-bottom: 0;
+    contain: inline-size;
+  }
+
 }
 
-/* layout tidy-up: align header, content and footer on the same edges */
-body {
-  padding: 0 1.5rem;
-}
+/* ---------- blog post reading view ---------- */
 
-.wrap {
-  max-width: 1100px;
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.hero-section {
-  justify-content: space-between;
-  gap: 2rem;
-}
-
-/* blog post reading view */
 .post {
   max-width: 820px;
   margin: 0 auto;
@@ -141,105 +184,20 @@ body {
   line-height: 1.8;
 }
 
+/* images inside a blog post (.post) or a notes page (.narrow) */
+article img,
+.narrow img,
 .post img {
   display: block;
-  width: auto;
-  max-width: min(100%, 680px);
   height: auto;
-  margin: 1.6rem auto;
+  max-width: 100%;
+  margin: 1.2rem auto;
   border-radius: 6px;
   border: 0.5px solid var(--rule);
 }
 
-.hero-tracker {
-  width: 270px;
-  flex-shrink: 0;
-}
-
-@media (max-width: 600px) {
-  .hero-tracker {
-    width: 100%;
-    max-width: 300px;
-  }
-}
-
-@media (min-width: 1000px) {
-  .home-top {
-    display: grid;
-    grid-template-columns: auto auto 1fr;
-    grid-template-areas:
-      "text luffy tracker"
-      "recent recent tracker";
-    column-gap: 2.5rem;
-    align-items: start;
-  }
-  .hero-section { display: contents; }
-  .hero-section > .narrow { grid-area: text; }
-  .hero-section > .hero-photo { grid-area: luffy; }
-  .hero-section > .hero-tracker { grid-area: tracker; width: 380px; justify-self: end; }
-  .home-top > div:last-child { grid-area: recent; margin-bottom: 0 !important; }
-}
-
-@media (max-width: 999px) {
-  .hero-tracker { width: 100%; max-width: 380px; }
-}
-
-/* below 1000px: stack as text, Luffy, tracker (instead of Luffy/tracker above the name) */
-@media (max-width: 999px) {
-  .hero-section { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-  .hero-section > .narrow { order: 1; }
-  .hero-section > .hero-photo { order: 2; width: 130px; height: 130px; margin-top: 0; }
-  .hero-section > .hero-tracker { order: 3; }
-}
-
-/* desktop: Luffy a bit further from the text; top edge unchanged, bottom flush with the tagline */
-@media (min-width: 1000px) {
-  .hero-section > .hero-photo {
-    width: 192px;
-    height: 192px;
-    margin-top: -14px;
-    margin-left: clamp(0.5rem, 5vw - 2rem, 3rem);
-  }
-}
-
-/* slightly larger nav links (home / notes / blog) */
-header .mono {
-  font-size: 0.95rem;
-}
-
-/* desktop: columns no longer depend on the Recent list, so Luffy never shifts when titles get long */
-@media (min-width: 1000px) {
-  .home-top {
-    grid-template-columns: auto auto minmax(0, 1fr) 420px;
-    grid-template-areas:
-      "text luffy . tracker"
-      "recent recent recent tracker";
-    column-gap: 0;
-  }
-  .hero-section > .hero-photo {
-    margin-left: calc(2.5rem + clamp(0.5rem, 5vw - 2rem, 3rem));
-  }
-  .home-top > div:last-child {
-    contain: inline-size;
-  }
-}
-
-/* trim bottom whitespace so the home page fits a typical laptop window without a scrollbar */
-main {
-  padding-bottom: 2rem !important;
-}
-.home-top + div {
-  margin-top: 2rem !important;
-}
-
-/* keep page content in the same place whether or not the page has a scrollbar */
-html {
-  scrollbar-gutter: stable;
-}
-
-/* current page marker in the nav */
-header a[aria-current="page"] {
-  text-decoration: underline;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 8px;
+.post img {
+  width: auto;
+  max-width: min(100%, 680px);
+  margin: 1.6rem auto;
 }

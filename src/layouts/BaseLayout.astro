@@ -6,7 +6,7 @@ interface Props {
   description?: string;
 }
 
-const { title, description = "Personal site: projects, notes, and writing." } = Astro.props;
+const { title, description = "Personal site: notes and writing." } = Astro.props;
 
 const path = Astro.url.pathname;
 const isHome = path === "/";
@@ -43,7 +43,7 @@ const isBlog = path.startsWith("/blog");
         </button>
       </nav>
     </header>
-    <main class="wrap" style="padding-bottom:4rem;">
+    <main class="wrap" style="padding-bottom:2rem;">
       <slot />
     </main>
     <footer class="wrap mono" style="border-top:0.5px solid var(--rule);padding:1.5rem 0;color:var(--ink-soft);">

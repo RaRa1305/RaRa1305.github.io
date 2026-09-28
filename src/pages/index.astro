@@ -10,38 +10,38 @@ const blogPosts = (await getCollection("blog", ({ data }) => !data.draft))
 
 <BaseLayout title="Rakshit Ranka">
   <div class="home-top">
-  <div class="hero-section">
-    <div class="narrow">
-      <h1 style="font-size:2rem;font-weight:500;margin:0 0 0.3rem;">Rakshit Ranka</h1>
-      <p class="mono" style="margin:0 0 0.8rem;">CSE Junior @ IIT Kharagpur</p>
-      <div style="display:flex;gap:0.6rem;margin:0 0 1.2rem;">
-        <a class="mono" href="/resume.pdf" style="border:0.5px solid var(--rule);border-radius:4px;padding:0.4rem 0.8rem;display:inline-block;">resume</a>
-        <a class="mono" href="https://github.com/RaRa1305" target="_blank" style="border:0.5px solid var(--rule);border-radius:4px;padding:0.4rem 0.8rem;display:inline-block;">github</a>
+    <div class="hero-section">
+      <div class="narrow">
+        <h1 style="font-size:2rem;font-weight:500;margin:0 0 0.3rem;">Rakshit Ranka</h1>
+        <p class="mono" style="margin:0 0 0.8rem;">CSE Junior @ IIT Kharagpur</p>
+        <div style="display:flex;gap:0.6rem;margin:0 0 1.2rem;">
+          <a class="mono" href="/resume.pdf" style="border:0.5px solid var(--rule);border-radius:4px;padding:0.4rem 0.8rem;display:inline-block;">resume</a>
+          <a class="mono" href="https://github.com/RaRa1305" target="_blank" style="border:0.5px solid var(--rule);border-radius:4px;padding:0.4rem 0.8rem;display:inline-block;">github</a>
+        </div>
+        <p style="margin:0;">
+          Trying to figure things out.
+        </p>
       </div>
-      <p style="margin:0;">
-        Trying to figure things out.
-      </p>
+      <div class="hero-tracker"><SpideyTracker compact /></div>
+      <img src="/Luffy.png" alt="Rakshit Ranka" class="hero-photo" />
     </div>
-    <div class="hero-tracker"><SpideyTracker compact /></div>
-    <img src="/Luffy.png" alt="Rakshit Ranka" class="hero-photo" />
+
+    {blogPosts.length > 0 && (
+      <div>
+        <p class="mono" style="color:var(--rust);margin:0 0 0.7rem;">Recent</p>
+        <ul style="list-style:none;margin:0;padding:0;">
+          {blogPosts.map((post) => (
+            <li style="margin-bottom:0.6rem;">
+              <a href={`/blog/${post.id}`}>{post.data.title}</a>
+              <span class="tag"> &middot; {post.data.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
   </div>
 
-  {blogPosts.length > 0 && (
-    <div style="margin-bottom: 2.5rem;">
-      <p class="mono" style="color:var(--rust);margin:0 0 0.7rem;">Recent</p>
-      <ul style="list-style:none;margin:0;padding:0;">
-        {blogPosts.map((post) => (
-          <li style="margin-bottom:0.6rem;">
-            <a href={`/blog/${post.id}`}>{post.data.title}</a>
-            <span class="tag"> &middot; {post.data.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )}
-  </div>
-
-  <div style="border-top:0.5px solid var(--rule);padding-top:1.5rem;margin-top:2.5rem;">
+  <div style="border-top:0.5px solid var(--rule);padding-top:1.5rem;margin-top:2rem;">
     <p class="mono" style="color:var(--ink-soft);margin:0 0 0.6rem;">GET IN TOUCH</p>
     <div style="display:flex;gap:0.6rem;">
       <a href="mailto:rakshitcosmo13@gmail.com" aria-label="Email" style="border:0.5px solid var(--rule);border-radius:4px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);">
